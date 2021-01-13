@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../layui/css/layui.css">
+		<script src="../layui/layui.all.js"></script>
+	</head>
+	<body class="layui-layout-body">
+		<div class="layui-layout layui-layout-admin">
+			<div class="layui-header">
+				<div class="layui-logo">仓储物流线上培训系统</div>
+				<div class="layui-nav layui-layout-right">
+					<div class="layui-nav-item">
+						<img class="layui-nav-img" src="../img/head.jpg" />
+						<span id="username">wyh</span>
+					</div>
+					<div class="layui-nav-item">
+						<a href="/ccwl/exitLogin">安全退出</a>
+					</div>
+				</div>
+			</div>
+			<div class="layui-side layui-bg-black">
+				<div class="layui-side-scroll">
+					<ul class="layui-nav layui-nav-tree">
+						<li class="layui-nav-item"><a href="">培训记录</a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="layui-body">
+				<div class="layui-card">
+					<div class="layui-card-header">
+					</div>
+					<div class="layui-card-body">
+						<div class="layui-card-header">
+							<div class="layui-inline">
+								<div class="layui-input-inline">
+									<input id="dept" type="text" class="layui-input" placeholder="部门" />
+								</div>
+								<div class="layui-input-inline">
+									<input id="team" type="text" class="layui-input" placeholder="班组" />
+								</div>
+								<div class="layui-input-inline">
+									<input id="jobNumber" type="text" class="layui-input" placeholder="工号" />
+								</div>
+								<div class="layui-input-inline">
+									<input id="name" type="text" class="layui-input" placeholder="姓名" />
+								</div>
+								<div class="layui-input-inline">
+									<input id="startDate" type="text" class="layui-input" placeholder="提交起始时间" />
+								</div>
+								<div class="layui-input-inline">
+									<input id="endDate" type="text" class="layui-input" placeholder="提交结束时间" />
+								</div>
+								<a id="query" class="layui-btn search_btn" >查询</a>
+								<a id="reset" class="layui-btn search_btn">重置</a>
+							</div>
+						</div>
+						<div class="layui-card-body">
+							<table id="trainingRecords" lay-filter="toolbar" lay-data="{id: 'recordsTable'}"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="layui-footer">
+				© wyh.com 仓储物流线上培训系统
+			</div>
+		</div>
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-btn-container">
+				<button id="export" class="layui-btn layui-btn-sm" lay-event="export">导出Excel</button>
+			</div>
+		</script>
+		<script>
+				var table = layui.table,
+					laydate = layui.laydate;
+				var $ = layui.jquery;
+				var nowTime = new Date();
+				laydate.render({
+					elem: '#startDate', //指定元素
+					max: 'nowTime' //默认最大值为当前日期
+				});
+				laydate.render({
+					elem: '#endDate', //指定元素
+					max: 'nowTime' //默认最大值为当前日期
+				});
+				table.render({
+					id: 'recordsTable',
+					elem: '#trainingRecords',
+					url: '/ccwl/getTrainingRecords', //数据接口
+					height: "full-300",
+					method: 'post',
+					title: '培训记录表',
+					toolbar: '#toolbarDemo',
+					defaultToolbar:[],
+					page: true, //开启分页,
+					request: {
+						pageName: 'page' //页码的参数名称，默认：page
+						,limitName: 'limit' //每页数据量的参数名，默认：limit
+					},
+					response: {
+						statusName: 'code' //规定数据状态的字段名称，默认：code
+						,statusCode: 200 //规定成功的状态码，默认：0
+						,msgName: 'errMsg' //规定状态信息的字段名称，默认：msg
+						,countName: 'count' //规定数据总数的字段名称，默认：count
+						,dataName: 'data' //规定数据列表的字段名称，默认：data
+					},
+					parseData: function(res) { //res 即为原始返回的数据
+						return {
+							"code": res.code, //解析接口状态
+							"msg": res.errMsg, //解析提示文本
+							"count": res.count, //解析数据长度
+							"data": res.data //解析数据列表
+						};
+					},
+					cols: [
+						[
+							{
+								field: 'UUID',
+								title: 'UUID',
+								width: 80,
+								hide:true,
+								sort: true
+							},
+							{
+								field: 'id',
+								title: 'ID',
+								width: 80,
+								sort: true
+							}, {
+								field: 'dept',
+								title: '部门',
+								width: 200
+							}, {
+								field: 'team',
+								title: '班组',
+								width: 200
+							}, {
+								field: 'jobNumber',
+								title: '工号',
+								width: 200
+							}, {
+								field: 'name',
+								title: '姓名',
+								width: 200
+							}, {
+								field: 'ctime',
+								title: '提交时间',
+								width: 300,
+								sort: true
+							}
+						]
+					],
+					done: function(res, curr, count){
+						// 绑定表格工具栏按钮的触发事件
+						bindTableToolbarFunction();
+					}
+				});
+				function bindTableToolbarFunction(){
+					$('#export').on('click',function () {
+						var dept = $('#dept').val().trim();
+						var team = $('#team').val().trim();
+						var jobNumber = $('#jobNumber').val().trim();
+						var name = $('#name').val().trim();
+						var startDate = $('#startDate').val().trim();
+						var endDate = $('#endDate').val().trim();
+						$.ajax({
+							url: "/ccwl/getTrainingRecords",
+							type: 'post',
+							data: {
+								dept : dept,
+								team : team,
+								jobNumber : jobNumber,
+								name : name,
+								startDate : startDate,
+								endDate : endDate
+							},
+							async: false,
+							dataType: 'json',
+							success: function (res) {
+								table.exportFile('recordsTable', res.data, 'xls');
+							}
+						});
+					});
+				}
+				$('#query').on('click', function () {
+					query();
+				});
+				function query(){
+					var dept = $('#dept').val().trim();
+					var team = $('#team').val().trim();
+					var jobNumber = $('#jobNumber').val().trim();
+					var name = $('#name').val().trim();
+					var startDate = $('#startDate').val().trim();
+					var endDate = $('#endDate').val().trim();
+					table.reload('recordsTable', {
+						url:'/ccwl/getTrainingRecords',
+						page: {curr:1},
+						where: {
+							dept : dept,
+							team : team,
+							jobNumber : jobNumber,
+							name : name,
+							startDate : startDate,
+							endDate : endDate
+						}
+
+					},'data')
+				}
+				$('#reset').on('click',function () {
+					$('#dept').val("");
+					$('#team').val("");
+					$('#jobNumber').val("");
+					$('#name').val("");
+					$('#startDate').val("");
+					$('#endDate').val("");
+					query();
+				});
+		</script>
+	</body>
+</html>

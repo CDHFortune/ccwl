@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" type="text/css" href="../css/base.css" media="all" />
+		<link rel="stylesheet" type="text/css" href="../layui/css/layui.css">
+		<script src="../layui/layui.all.js"></script>
+		<title></title>
+	</head>
+	<body>
+		<div class="layui-main">
+			<div class="layui-card">
+				<div class="layui-card-header">
+					<img src="../img/zcrunbber.png" width="100px" height="100%" />
+				</div>
+				<div class="layui-card-body">
+					<div class="layui-card-header">
+						仓储物流部线上培训系统
+					</div>
+					<div class="layui-card-body">
+						<div class="layui-form">
+							<div class="layui-form-item">
+								<label class="layui-form-label">部门:</label>
+								<div class="layui-input-block">
+									<input id="dept" type="text" class="layui-input" placeholder="仓储物流部" />
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">班组:</label>
+								<div class="layui-input-block">
+									<input id="team" type="text" class="layui-input" placeholder="班组2-3" />
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">工号:</label>
+								<div class="layui-input-block">
+									<input id="jobNumber" type="text" class="layui-input" placeholder="10832" />
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">姓名:</label>
+								<div class="layui-input-block">
+									<input id="name" type="text" class="layui-input" placeholder="李四" />
+								</div>
+							</div>
+						</div>
+						<div>
+							<video onended="isSubmit()" src="../video/video1.mp4" autoplay="autoplay" width="100%" height="30%"></video>
+						</div>
+						<div style="margin: 0 auto;">
+							<a id="submit" class="layui-btn search_btn" data-type="reload">提交</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+			var $ = layui.jquery;
+			function isSubmit(){
+				alert("1111111111");
+			}
+			$("#submit").click(function(){
+				var dept = $("#dept").val().trim();
+				var team = $("#team").val().trim();
+				var jobNumber = $("#jobNumber").val().trim();
+				var name = $("#name").val().trim();
+				var data = {"dept":dept,"team":team,"jobNumber":jobNumber,"name":name};
+				$.post("/ccwl/addTrainingRecords",data,function(res){
+					if(res.success == true){
+						layer.msg("提交成功", {
+							icon: 1 
+						});
+					}else{
+						layer.msg(res.errMsg, {
+							icon: 2
+						});
+					}
+				})
+			});
+		</script>
+	</body>
+</html>

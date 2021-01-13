@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title></title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" type="text/css" href="./layui/css/layui.css" media="all">
+		<link rel="stylesheet" type="text/css" href="./css/base.css" media="all" />
+		<script src="./layui/layui.all.js"></script>
+	</head>
+	<body>
+		<div class="background_yao">
+		</div>
+		<div class="login">
+			<h1>登陆</h1>
+			<form class="layui-form">
+				<div class="layui-form-item">
+					<input class="layui-input" name="username" lay-verType="tips" placeholder="用户名" lay-verify="required" type="text"
+					 autocomplete="off">
+				</div>
+				<div class="layui-form-item">
+					<input class="layui-input" name="password" lay-verType="tips" placeholder="密码" lay-verify="required" type="password"
+					 autocomplete="off">
+				</div>
+				<button class="layui-btn login_btn" lay-submit="" lay-filter="login">登录</button>
+			</form>
+		</div>
+		<script type="text/javascript">
+				var form = layui.form;
+				var $ = layui.jquery;
+				form.on("submit(login)", function(data) {
+					var load = layer.load(1, {
+						shade: 0.3
+					});
+					$.post("/ccwl/login", data.field, function(res) {
+						layer.close(load);
+						if (res.success == true) {
+							location.href = "/ccwl/view/home.html";
+						} else {
+							layer.msg(res.errMsg, {
+								icon: 2
+							});
+						}
+					})
+					return false;
+				});
+		</script>
+	</body>
+</html>

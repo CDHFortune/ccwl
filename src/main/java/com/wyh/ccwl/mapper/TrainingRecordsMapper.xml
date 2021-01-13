@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wyh.ccwl.mapper.TrainingRecordsMapper">
+    <select id="getTrainingRecordsPage" resultType="com.wyh.ccwl.bean.TrainingRecords">
+       SELECT UUID,DEPT,TEAM,JOBNUMBER,NAME,DATE_FORMAT(CTIME,'%Y-%m-%d %H:%i:%s') CTIME FROM XS_PX
+        <where>
+            <if test="dept != null and dept != ''">
+                DEPT = #{dept}
+            </if>
+            <if test="team != null and team != ''">
+                AND TEAM like #{team}
+            </if>
+            <if test="jobNumber != null and jobNumber != ''">
+                AND JOBNUMBER like #{jobNumber}
+            </if>
+            <if test="name != null and name != ''">
+                AND NAME = #{name}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND CTIME &gt;= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND CTIME &lt;= #{endDate}
+            </if>
+        </where>
+        ORDER BY 'CTIME' DESC
+        LIMIT #{page},#{limit}
+    </select>
+    <select id="getTrainingRecords" resultType="com.wyh.ccwl.bean.TrainingRecords">
+        SELECT UUID,DEPT,TEAM,JOBNUMBER,NAME,DATE_FORMAT(CTIME,'%Y-%m-%d %H:%i:%s') CTIME FROM XS_PX
+        <where>
+            <if test="dept != null and dept != ''">
+                DEPT = #{dept}
+            </if>
+            <if test="team != null and team != ''">
+                AND TEAM like #{team}
+            </if>
+            <if test="jobNumber != null and jobNumber != ''">
+                AND JOBNUMBER like #{jobNumber}
+            </if>
+            <if test="name != null and name != ''">
+                AND NAME = #{name}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                AND CTIME &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND CTIME &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+            </if>
+        </where>
+        ORDER BY 'CTIME' DESC
+    </select>
+   <select id="getTrainingRecordsCount" resultType="java.lang.Integer">
+    SELECT COUNT(UUID) COUNT FROM XS_PX
+    <where>
+        <if test="dept != null and dept != ''">
+            DEPT = #{dept}
+        </if>
+        <if test="team != null and team != ''">
+            AND TEAM like #{team}
+        </if>
+        <if test="jobNumber != null and jobNumber != ''">
+            AND JOBNUMBER like #{jobNumber}
+        </if>
+        <if test="name != null and name != ''">
+            AND NAME = #{name}
+        </if>
+        <if test="startDate != null and startDate != ''">
+            AND CTIME &gt;= STR_TO_DATE(#{startDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+        <if test="endDate != null and endDate != ''">
+            AND CTIME &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
+        </if>
+    </where>
+</select>
+    <insert id="addTrainingRecords" >
+        INSERT INTO XS_PX(UUID,DEPT,TEAM,JOBNUMBER,NAME,CTIME) VALUES(#{UUID},#{dept},#{team},#{jobNumber},#{name},#{ctime})
+    </insert>
+</mapper>
