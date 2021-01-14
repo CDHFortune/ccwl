@@ -25,7 +25,7 @@
                 AND CTIME &lt;= #{endDate}
             </if>
         </where>
-        ORDER BY 'CTIME' DESC
+        ORDER BY CTIME DESC
         LIMIT #{page},#{limit}
     </select>
     <select id="getTrainingRecords" resultType="com.wyh.ccwl.bean.TrainingRecords">
@@ -50,7 +50,7 @@
                 AND CTIME &lt;= STR_TO_DATE(#{endDate},'%Y-%m-%d %H:%i:%s')
             </if>
         </where>
-        ORDER BY 'CTIME' DESC
+        ORDER BY CTIME DESC
     </select>
    <select id="getTrainingRecordsCount" resultType="java.lang.Integer">
     SELECT COUNT(UUID) COUNT FROM XS_PX

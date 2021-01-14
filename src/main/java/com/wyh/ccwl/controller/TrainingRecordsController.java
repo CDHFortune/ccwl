@@ -28,14 +28,20 @@ public class TrainingRecordsController {
             List<TrainingRecords> trainingRecordsList;
             if(page != null && limit != null){
                 trainingRecordsList = trainingRecordsService.getTrainingRecordsPage(dept,team,jobNumber,name,startDate,endDate,(page-1)*limit,limit);
+                if(trainingRecordsList != null){
+                    for (int i = 0;i<trainingRecordsList.size();i++){
+                        trainingRecordsList.get(i).setId((page-1)*limit+(i+1)+"");
+                    }
+                }
             }else{
                 trainingRecordsList = trainingRecordsService.getTrainingRecords(dept,team,jobNumber,name,startDate,endDate);
-            }
-            if(trainingRecordsList != null){
-                for (int i = 0;i<trainingRecordsList.size();i++){
-                    trainingRecordsList.get(i).setId(i+1+"");
+                if(trainingRecordsList != null){
+                    for (int i = 0;i<trainingRecordsList.size();i++){
+                        trainingRecordsList.get(i).setId(i+1+"");
+                    }
                 }
             }
+
             Integer trainingRecordsCount = trainingRecordsService.getTrainingRecordsCount(dept,team,jobNumber,name,startDate,endDate);
             return new RespBean(trainingRecordsList,trainingRecordsCount!=null?trainingRecordsCount:0);
         }catch (Exception e){
